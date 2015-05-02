@@ -1,0 +1,43 @@
+extends base
+
+block vars
+	- var title = "Index Page"
+
+block body
+	center
+		p Guess the game being played on this stream by reading the chat.
+
+		iframe( 
+			src="http://www.twitch.tv/#{stream}/chat" 
+			frameborder="0" 
+			scrolling="no" 
+			height="500" 
+			width="500" 
+		)
+		input(type="submit")
+
+		ul
+			each val in games
+				button(
+					type='submit'
+					name='#{val}'
+					style='width: 200px; height: 50px; background-color: red;') #{val}
+		
+		form(method="post")
+			span First Name:
+			input(type="text", name="firstName", required=true)
+			br
+
+			span Last Name:
+			input(type="text", name="lastName", required=true)
+			br
+
+			span Email:
+			input(type="email", name="email", required=true)
+			br
+
+			span Password:
+			input(type="password", name="password", required=true)
+			br
+
+			input(type="submit")
