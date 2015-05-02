@@ -5,8 +5,8 @@ block vars
 
 block body
 	center
-		p Guess the game being played on this stream by reading the chat.
-
+		p(style='color: purple; background-color: #F0F0F0') Guess the game being played on this stream by reading the chat.
+		br
 		iframe( 
 			src="http://www.twitch.tv/#{stream}/chat" 
 			frameborder="0" 
@@ -16,9 +16,10 @@ block body
 		)
 
 
+
 		ul 
 			each val in games
 				button(
 					type='submit'
 					name='#{val}'
-					style='width: 240px; height: 200px; color:purple; ') #{val}
+					style='width: 240px; height: 200px; color: purple;') #{val}
