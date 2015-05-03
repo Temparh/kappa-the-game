@@ -1,25 +1,43 @@
-extends base
+doctype html
+html
+	head
+		// Tab Title
+		title='Twitch Game'
+	body
 
-block vars
-	- var title = "Index Page"
-
-block body
+	// Keep everything centered for now.
 	center
+
+		// Tiny Header
 		p(style='color: purple; background-color: #F0F0F0') Guess the game being played on this stream by reading the chat.
 		br
+
+		// Creates a random Twitch chat.
 		iframe( 
-			src="http://www.twitch.tv/#{stream}/chat" 
-			frameborder="0" 
-			scrolling="no" 
-			height="500" 
-			width="500" 
-		)
+			src	="http://www.twitch.tv/#{stream_name}/chat" 
+			frameborder	="0" 
+			scrolling	="no" 
+			height		="500" 
+			width		="500" )
 
-
-
+		// List top 20 Games on Twitch to guess from.
 		ul 
 			each val in games
 				button(
-					type='submit'
-					name='#{val}'
-					style='width: 240px; height: 200px; color: purple;') #{val}
+					type	='submit'
+					name	='#{val}'
+					onclick	='answer("#{val}")'
+					style	='width: 240px; height: 200px; color: purple;') #{val}
+
+// All clientside scripts.
+script.
+	function answer(guess) {
+		var stream_game = '#{stream_game}'
+		//window.location.href = '/answer?guess=' + game + '?correct=' + stream_game 
+		if ( stream_game == guess ) {
+			window.location.href = '/correct'
+		} else {
+			window.location.href = '/wrong'
+		}
+		//window.location.href = '/newpage?game=' + game
+	}
