@@ -13,7 +13,6 @@
 var express = require('express');
 var app 	= express();
 var request = require('request');
-var t_api 	= require('twitch-api');
 
 
 app.set('port', (process.env.PORT || 5001));
