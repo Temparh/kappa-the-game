@@ -7,6 +7,7 @@
 		- Make game buttons reshuffle.
 		- Add difficulty option.
 		- Do it on time??!?"!"?#?!"¤ "
+		- Create hints!
 
 ---------------------------------------------------*/
 // Setup
@@ -47,7 +48,6 @@ TG_c.chatLang 		= ['en'];
 TG_c.difficulty 	= TG_v.easy;
 
 
-
 /*----------------------------
 		Functions
 -----------------------------*/
@@ -56,24 +56,28 @@ app.get('/', function(req, res) {
 	request('https://api.twitch.tv/kraken/streams', function( err, response, body ) {
 		body = JSON.parse(body);
 
-		// Find a stream with the language 'en'.
-		var stream = choseRandomStream(body, TG_c.chatLang);
-		if ( stream ) {
-			var stream_name = stream['channel']['name'];
-			var stream_game = stream['channel']['game'];
-		} else {
-			console.log("Couldn't find suitable stream!");
-			var stream_name = 'kraken';
-			var stream_game = 'kraken';
+		// Prepare stream list.
+		var streams = new String;
+		body = body['streams'];
+		for (var k in body) {
+			if (typeof body[k] != 'object') continue;
+			var name = body[k]['channel']['name'];
+			var game = body[k]['channel']['game'];
+
+			streams = streams + '|||STREAM|||' + name;
+			streams = streams + '|||GAME|||' + game;
 		};
 
-		res.render('index', { stream_name : stream_name, stream_game : stream_game,  games : topGames  });
+		// Render function and send data to client-side.
+		res.render('index', { streams : streams, games : topGames });
 	});
 
+	// Make sure the list of games is up to date.
 	updateGames();
 });
 
 
+// Shuffles a table.
 Array.prototype.shuffle = function() {
 	var m = this.length, t, i;
 
@@ -86,6 +90,7 @@ Array.prototype.shuffle = function() {
 		this[i] = t;		// take the end object and place it in random card's place.
 	};
 };
+
 
 // Goes through array to check for value
 // TODO: Check if you can just do if ( value in table ) --
@@ -121,8 +126,8 @@ function choseRandomStream(body, language) {
 	};	
 	if ( filtered.length < 1 ) return false;
 
-	var rnd = Math.floor( Math.random() * filtered.length );
-	return filtered[rnd];
+	var rnd = Math.floor( Math.random() * len );
+	return body['streams'][rnd];
 };
 
 

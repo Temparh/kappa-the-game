@@ -5,39 +5,127 @@ html
 		title='Twitch Game'
 	body
 
+		- var purple	= 'purple'; // #{purple}
+		- var grey 		= '#F0F0F0'; // #{grey}
 	// Keep everything centered for now.
 	center
-
 		// Tiny Header
 		p(style='color: purple; background-color: #F0F0F0') Guess the game being played on this stream by reading the chat.
 		br
 
+		// 
 		// Creates a random Twitch chat.
 		iframe( 
 			src	="http://www.twitch.tv/#{stream_name}/chat" 
-			frameborder	="0" 
-			scrolling	="no" 
-			height		="500" 
-			width		="500" )
+			frameborder ="0" 
+			scrolling ="no" 
+			height ="500" 
+			width ="500"
+			id = 'twitch_frame' )
 
-		// List top 20 Games on Twitch to guess from.
-		ul 
-			each val in games
-				button(
-					type	='submit'
-					name	='#{val}'
-					onclick	='answer("#{val}")'
-					style	='width: 240px; height: 200px; color: purple;') #{val}
+		br
+		br
 
-// All clientside scripts.
+		// Div which holds all buttons
+		// Wrapper
+		div(
+			style='background-color:#{grey}; width: 100%; height:0'
+			id='big_div_wrapper'
+		)
+			br
+			div( 
+				style='background-color: NONE; width: 100%; height: 0px;'
+				id='big_div'
+			)
+				// List top 20 Games on Twitch to guess from.
+				each val in games
+					button(
+						type ='submit'
+						name ='#{val}'
+						id ='#{val}'
+						onclick ='answer("#{val}")'
+						style ='width: 25%; height: 20px; color: purple;') #{val}
+
+
+// All clientside scripts. /*	
 script.
-	function answer(guess) {
-		var stream_game = '#{stream_game}'
-		//window.location.href = '/answer?guess=' + game + '?correct=' + stream_game 
-		if ( stream_game == guess ) {
-			window.location.href = '/correct'
-		} else {
-			window.location.href = '/wrong'
-		}
-		//window.location.href = '/newpage?game=' + game
+	streams_string = '#{streams}';
+	streams = new Object;
+	var split = streams_string.split('|||STREAM|||');
+	for (numOfStreams in split) {
+		if (split[numOfStreams] == '' ) continue
+		var t = split[numOfStreams].split('|||GAME|||');
+		streams[ numOfStreams ] = { 'NAME' : t[0], 'GAME' :t[1]}; 
 	}
+
+	var correctAnswer = new String;
+	// Start a new game.
+	function newGame() {
+		var twitch_frame = document.getElementById('twitch_frame');
+		var rndStream = streams[Math.floor( Math.random() * numOfStreams-1)+1]; // 1-25.
+		
+		// Change chat to the new stream.
+		twitch_frame.src = 'http://www.twitch.tv/' + rndStream.NAME + '/chat';
+		correctAnswer = rndStream.GAME; 
+	};
+	newGame();
+
+	// Disable or enable buttons.
+	function disableOptions(lock) {
+		var btns = "#{games}";
+		var btns = btns.split(',');
+		
+		// Lock all answer buttons.
+		allDocus = document.getElementsByTagName('*');
+		for (var k in btns) {
+			for (i=0; i<allDocus.length; i++) {
+				if (allDocus[i].name = btns[k]) allDocus[i].disabled = lock;	
+			}	
+		}
+	}
+
+
+	// Answer function.
+	function answer(guess) {
+		var guess_btn = document.getElementById(guess);
+		var correct_btn = document.getElementById(correctAnswer);
+		var twitch_frame = document.getElementById('twitch_frame');
+		var games = "#{games}";
+		var games = games.split(',');
+
+
+		// Check if right or wrong.
+		if ( correctAnswer == guess ) {
+			// Correct
+			guess_btn.style.color = 'green';
+		} else {
+			// Wrong
+			guess_btn.style.color = 'red';
+			correct_btn.style.color = 'green';
+		}
+
+		disableOptions(true); // Disable all buttons.
+
+		// Wait 2 seconds, then reset buttons and start a new game.
+		setTimeout(function() {
+			disableOptions(false);
+			guess_btn.style.color = 'purple';
+			correct_btn.style.color = 'purple';
+			newGame();
+			clea;
+		}, 2000);
+	}
+
+	// Resize wrapper to fit answer buttons.	
+	function myFunction() {
+		var games = "#{games}";
+		var games = games.split(',');
+		var h = Math.floor( games.length / 4 ) * 20;
+		if (games.length % 4) h = h + 20;
+
+		var div = document.getElementById('big_div');
+		var div_wrapper = document.getElementById('big_div_wrapper');
+		div.style.height = h + 'px';
+		div_wrapper.style.height = h + 70 + 'px';
+	}
+	myFunction(); 
