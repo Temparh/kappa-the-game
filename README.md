@@ -1,3 +1,4 @@
-# A project to test my own skills in Node.js
+# A cute Twitch games
 
-Why can't I hold all these commits
+A ridicoulessly hard game in which you must observe a Twitch chat to guess the game. 
+For all the Kappa lovers out there.
