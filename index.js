@@ -68,6 +68,8 @@ app.get('/', function(req, res) {
 			streams = streams + '|||GAME|||' + game;
 		};
 
+		streams = streams.replace('"', "'");
+
 		// Render function and send data to client-side.
 		res.render('index', { streams : streams, games : topGames });
 	});
@@ -164,7 +166,7 @@ function updateStreams() {
 		body = JSON.parse(body); // Converts response to JSON
 		topStreams = ['temparh'];
 		for ( var i = 0; i < 25; i++ ) {
-			topStreams.push( body['streams'][i]['channel']['name'] );
+			topStreams.push( body['streams'][i]['channel']['name'].replace('"', "'") );
 		};
 	});
 };

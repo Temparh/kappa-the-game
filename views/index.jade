@@ -1,70 +1,74 @@
 doctype html
 html
 	head
+		link(href='stylesheets/style.css' rel='stylesheet')
 		// Tab Title
 		title='Twitch Game'
+
+		
 	body
 
-		- var purple	= 'purple'; // #{purple}
-		- var grey 		= '#F0F0F0'; // #{grey}
+		- var purple	= 'purple' // #{purple}
+		- var grey 		= '#F0F0F0' // #{grey}
 	// Keep everything centered for now.
 	center
-		// Tiny Header
-		p(style='color: purple; background-color: #F0F0F0') Guess the game being played on this stream by reading the chat.
-		br
-
-		// 
-		// Creates a random Twitch chat.
-		iframe( 
-			src	="http://www.twitch.tv/#{stream_name}/chat" 
-			frameborder ="0" 
-			scrolling ="no" 
-			height ="500" 
-			width ="500"
-			id = 'twitch_frame' )
-
-		br
-		br
-
-		// Div which holds all buttons
-		// Wrapper
-		div(
-			style='background-color:#{grey}; width: 100%; height:0'
-			id='big_div_wrapper'
-		)
+		div( id='container' )
+			// Tiny Header
+			p(style='color: purple; background-color: #F0F0F0') Guess the game being played on this stream by reading the chat.
 			br
-			div( 
-				style='background-color: NONE; width: 100%; height: 0px;'
-				id='big_div'
+
+			// 
+			// Creates a random Twitch chat.
+			iframe( 
+				src	="http://www.twitch.tv/#{stream_name}/chat" 
+				frameborder="0" 
+				scrolling="no" 
+				height="500" 
+				width="100%"
+				id='twitch_frame' )
+
+			br
+			br
+
+			// Div which holds all buttons
+			// Wrapper
+			div(
+				style='background-color:#{grey}; width: 100%; height:0'
+				id='big_div_wrapper'
 			)
-				// List top 20 Games on Twitch to guess from.
-				each val in games
-					button(
-						type ='submit'
-						name ='#{val}'
-						id ='#{val}'
-						onclick ='answer("#{val}")'
-						style ='width: 25%; height: 20px; color: purple;') #{val}
+				br
+				div( 
+					style='background-color: NONE; width: 100%; height: 0px;'
+					id='big_div'
+				)
+					// List top 20 Games on Twitch to guess from.
+					each val in games
+						button(
+							type='submit'
+							name='#{val}'
+							id='#{val}'
+							onclick='answer("#{val}")'
+							style='width: 25%; height: 20px; color: purple;') #{val}
 
-		div(
-			style='background-color: NONE; width: 100%; height: 200px;'
-			id='div_kappa'
-		)
+			div(
+				style='background-color: NONE; width: 100%; height: 200px;'
+				id='div_kappa'
+			)
 
 
-// All clientside scripts. /*	
+// All clientside scripts.	
+
 script.
-	streams_string = '#{streams}';
-	streams = new Object;
+
+	var streams_string = "#{streams}";
+	var streams = new Object();
 	var split = streams_string.split('|||STREAM|||');
 	for (numOfStreams in split) {
-		if (split[numOfStreams] == '' ) continue
+		if ( split[numOfStreams] == '' ) continue
 		var t = split[numOfStreams].split('|||GAME|||');
-		streams[ numOfStreams ] = { 'NAME' : t[0], 'GAME' :t[1]}; 
-	}
-
-
-	var correctAnswer = new String;
+		streams[ numOfStreams ] = { 'NAME' : t[0], 'GAME' : t[1] }; 
+	};
+	var correctAnswer = new String();
 	// Start a new game.
 	function newGame() {
 		var twitch_frame = document.getElementById('twitch_frame');
@@ -87,9 +91,9 @@ script.
 		for (var k in btns) {
 			for (i=0; i<allDocus.length; i++) {
 				if (allDocus[i].name = btns[k]) allDocus[i].disabled = lock;	
-			}	
-		}
-	}
+			};
+		};
+	};
 
 	// Answer function.
 	function answer(guess) {
@@ -110,7 +114,7 @@ script.
 			guess_btn.style.color = 'red';
 			correct_btn.style.color = 'green';
 			addFailPoint();
-		}
+		};
 
 		disableOptions(true); // Disable all buttons.
 
@@ -120,9 +124,8 @@ script.
 			guess_btn.style.color = 'purple';
 			correct_btn.style.color = 'purple';
 			newGame();
-			clea;
 		}, 2000);
-	}
+	};
 
 	// Resize wrapper to fit answer buttons.	
 	function myFunction() {
